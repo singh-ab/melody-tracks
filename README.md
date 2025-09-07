@@ -22,7 +22,7 @@ A React application showcasing micro frontend architecture with module federatio
    cd music-library
    npm install
    npm run dev
-   # Should run on http://localhost:5001
+   # Check http://localhost:5001
    ```
 
 3. **Start the main application in a separate terminal:**
@@ -31,7 +31,7 @@ A React application showcasing micro frontend architecture with module federatio
    cd main-app
    npm install
    npm run dev
-   # Should run on http://localhost:5000
+   # Check http://localhost:5000
    ```
 
 4. **Open your browser at http://localhost:5000**
@@ -51,37 +51,30 @@ This project uses Vite's Module Federation to load components across separate ap
 2. The music-library exposes a MusicLibrary component loaded at runtime
 3. Communication happens through props (the role prop is passed from shell to remote)
 
-### Role-Based Authentication
-
-The application uses a simple role-based access control system:
-
-1. Users log in with credentials stored in localStorage
-2. The role ("admin" or "user") is passed to the MusicLibrary component
-3. Admin users can add/edit/delete songs, while regular users can only view and filter
 
 ## Deployment on Vercel
 
-To deploy this application on Vercel:
+I separated the codebases and pushed the code for main-app to `melody-shell` and for music-library to `melody-tracks` repos. Then, I hosted these apps separately via Vercel.
+Of course it was possible to host it from the same repo, but I like to keep the code commits and git graph separate and clean for both the shell and the music library. Hence, I separated their repo and deployments.
 
-1. **Push your code to GitHub**
+1. **Pushed code to GitHub**
 
-2. **Deploy the music-library remote first:**
+2. **Deployed the music-library remote first:**
 
-   - Create a new project in Vercel pointing to your repository
-   - Configure build settings:
+   - Created a new project in Vercel pointing to repository
+   - Configured build settings (default):
      - Framework Preset: Vite
      - Root Directory: `music-library`
      - Build Command: `npm run build`
      - Output Directory: `dist`
-   - Add environment variable: `VITE_APP_BASE_URL` set to your deployment URL
+   - Added environment variable: `VITE_BASE_URL` set to your deployment URL
 
-3. **Deploy the main-app shell:**
+3. **Deployed the main-app shell:**
 
-   - Create another project in Vercel pointing to the same repository
-   - Configure build settings:
+   - Created another project in Vercel pointing to the same repository
+   - Configured build settings (default):
      - Framework Preset: Vite
      - Root Directory: `main-app`
      - Build Command: `npm run build`
      - Output Directory: `dist`
-   - Add environment variable: `VITE_REMOTE_URL` set to your music-library deployment URL
-   - Update the remote entry URL in `main-app/vite.config.ts` to point to your deployed music-library
+   - Added environment variable: `VITE_MUSIC_LIBRARY_URL` set to your music-library deployment URL
