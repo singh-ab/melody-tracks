@@ -36,7 +36,6 @@ function songsReducer(state: State, action: Action): State {
 
 const MusicLibrary: React.FC<Props> = ({ role }) => {
   // debug: indicate when the remote mounts
-  // eslint-disable-next-line no-console
   console.log("[music_library] MusicLibrary mounted, role=", role);
   const [state, dispatch] = useReducer(songsReducer, { songs: loadSongs() });
   const [filters, setFilters] = useState({ q: "", artist: "", album: "" });
@@ -81,7 +80,13 @@ const MusicLibrary: React.FC<Props> = ({ role }) => {
     if (!groupBy) return null;
     // Using reduce for grouping requirement
     return filtered.reduce<Record<string, Song[]>>((acc, song) => {
-      const key = (song as any)[groupBy] as string;
+      // Type-safe property access for known groupBy values
+      const key =
+        groupBy === "album"
+          ? song.album
+          : groupBy === "artist"
+          ? song.artist
+          : "";
       acc[key] = acc[key] || [];
       acc[key].push(song);
       return acc;

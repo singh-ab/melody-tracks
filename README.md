@@ -1,69 +1,87 @@
-# React + TypeScript + Vite
+# Music App Micro Frontend Demo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application showcasing micro frontend architecture with module federation and role-based access.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Role-based authentication (Admin/User roles)
+- Micro frontend architecture using Vite Module Federation
+- Music library with filtering and sorting
+- Client-side data storage with localStorage
 
-## Expanding the ESLint configuration
+## How to Run Locally
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Prerequisites:**
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+   - Node.js v20.19+ or v22.x
+   - NPM v10+
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+2. **Start the remote micro frontend first:**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+   ```powershell
+   cd music-library
+   npm install
+   npm run dev
+   # Should run on http://localhost:5001
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. **Start the main application in a separate terminal:**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+   ```powershell
+   cd main-app
+   npm install
+   npm run dev
+   # Should run on http://localhost:5000
+   ```
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4. **Open your browser at http://localhost:5000**
+
+## Demo Credentials
+
+- **Admin Role:** username: `admin`, password: `admin`
+- **User Role:** username: `user`, password: `user`
+
+## How It Works
+
+### Micro Frontend Architecture
+
+This project uses Vite's Module Federation to load components across separate applications:
+
+1. The main-app is the shell that handles authentication and loads remote components
+2. The music-library exposes a MusicLibrary component loaded at runtime
+3. Communication happens through props (the role prop is passed from shell to remote)
+
+### Role-Based Authentication
+
+The application uses a simple role-based access control system:
+
+1. Users log in with credentials stored in localStorage
+2. The role ("admin" or "user") is passed to the MusicLibrary component
+3. Admin users can add/edit/delete songs, while regular users can only view and filter
+
+## Deployment on Vercel
+
+To deploy this application on Vercel:
+
+1. **Push your code to GitHub**
+
+2. **Deploy the music-library remote first:**
+
+   - Create a new project in Vercel pointing to your repository
+   - Configure build settings:
+     - Framework Preset: Vite
+     - Root Directory: `music-library`
+     - Build Command: `npm run build`
+     - Output Directory: `dist`
+   - Add environment variable: `VITE_APP_BASE_URL` set to your deployment URL
+
+3. **Deploy the main-app shell:**
+
+   - Create another project in Vercel pointing to the same repository
+   - Configure build settings:
+     - Framework Preset: Vite
+     - Root Directory: `main-app`
+     - Build Command: `npm run build`
+     - Output Directory: `dist`
+   - Add environment variable: `VITE_REMOTE_URL` set to your music-library deployment URL
+   - Update the remote entry URL in `main-app/vite.config.ts` to point to your deployed music-library
