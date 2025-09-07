@@ -5,10 +5,11 @@ import { federation } from "@module-federation/vite";
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
-    origin: "http://localhost:5001",
     port: 5001,
+    cors: true, // Enable CORS for all origins
   },
-  base: "http://localhost:5001",
+  // In production, we want to use '/' as the base path
+  base: process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001",
   plugins: [
     react(),
     federation({
