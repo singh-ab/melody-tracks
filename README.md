@@ -1,4 +1,4 @@
-# Music App Micro Frontend Demo
+# Music App Micro Frontend
 
 A React application showcasing micro frontend architecture with module federation and role-based access.
 
@@ -45,6 +45,7 @@ A React application showcasing micro frontend architecture with module federatio
 
 ### Micro Frontend Architecture
 
+I decided to go with Vite and not Webpack because Webpack+NextJS were having some trouble working together. Vite was simpler.
 This project uses Vite's Module Federation to load components across separate applications:
 
 1. The main-app is the shell that handles authentication and loads remote components
