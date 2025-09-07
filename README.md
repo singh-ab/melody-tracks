@@ -52,6 +52,14 @@ This project uses Vite's Module Federation to load components across separate ap
 2. The music-library exposes a MusicLibrary component loaded at runtime
 3. Communication happens through props (the role prop is passed from shell to remote)
 
+### Role-Based Authentication
+
+The application uses a simple role-based access control system:
+
+1. Users log in with credentials stored in localStorage
+2. The role ("admin" or "user") is passed to the MusicLibrary component
+3. Admin users can add/edit/delete songs, while regular users can only view and filter
+
 
 ## Deployment on Vercel
 
